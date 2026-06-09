@@ -25,4 +25,9 @@ O assistente de triagem é capaz de ingerir metadados complexos de cabeçalho, i
 
 ---
 ### 📸 Evidências do Projeto
+<img width="956" height="413" alt="1" src="https://github.com/user-attachments/assets/bb1d6e10-705a-4189-9f81-71da76d32de8" />
+<img width="955" height="401" alt="2" src="https://github.com/user-attachments/assets/2f7c32a7-2eb5-4bc1-8d88-538c3e741afa" />
+<img width="952" height="451" alt="3" src="https://github.com/user-attachments/assets/0a99a699-3f2c-496e-96bc-feca3d83e083" />
+<img width="941" height="404" alt="4" src="https://github.com/user-attachments/assets/4307e793-2bb1-4e5c-9aa1-02e7b2acbcce" />
+<img width="950" height="452" alt="5" src="https://github.com/user-attachments/assets/e410c049-2599-4742-af80-8191b4dd7b51" />
 <img width="338" height="278" alt="image" src="https://github.com/user-attachments/assets/d3a37cf0-f707-481c-9b5a-2d4cb464cda5" />
