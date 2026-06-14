@@ -1,0 +1,283 @@
+Prompt 
+"Generate a unified Incident Response Playbook for Phishing Attacks followed by Enterprise Malware Infection. Follow the NIST framework and provide practical checklists for the frontline SOC analyst."
+
+
+# Incident Response Playbook – Phishing & Enterprise Malware  
+*Conforms to NIST SP 800‑61 Rev. 2*  
+
+---
+
+## 1. Scope and Audience  
+
+- **Intended Users:** SOC Analysts (Tier‑1 and Tier‑2), Incident Response Lead, IT Asset Owner, Communications Lead.  
+- **Applicable Environments:** Corporate email system (Exchange/Google Workspace) and endpoint fleet (Windows, macOS, Linux) protected by EDR.  
+
+---
+
+# Phishing – Phase: Preparation  
+
+- **Prerequisite Controls**  
+  - Email gateway filtering (spam, malicious attachment, URL reputation).  
+  - Endpoint Protection Platform (EDR) with anti‑phishing signatures.  
+  - Centralized logging (mail server, proxy, EDR) forwarded to SIEM.  
+  - Up‑to‑date asset inventory and user directory integration.  
+
+- **Detection Tool Checklist**  
+  - [ ] SIEM configured with alerts for:  
+    - Suspicious sender domain / SPF/DKIM failures.  
+    - Known malicious URL or hash.  
+    - User‑reported “phish” tickets.  
+  - [ ] EDR policy includes “Email Attachment Execution” and “Browser URL Reputation”.  
+  - [ ] Threat Intel feed integrated for IOCs.  
+
+- **Roles & Responsibilities**  
+  - **SOC Analyst – Tier‑1:** Initial alert triage, evidence gathering, run‑book activation.  
+  - **SOC Analyst – Tier‑2:** Deep dive analysis, IOC validation, containment execution.  
+  - **Incident Response Lead (IR Lead):** Escalation decision, coordination with business owners.  
+  - **IT Owner:** Account & endpoint remediation.  
+  - **Communications Lead:** Internal/external notifications.  
+
+- **Run‑book Activation Checklist**  
+  - [ ] Confirm alert source (SIEM, user report, mail gateway).  
+  - [ ] Create incident ticket; assign to Tier‑1 analyst.  
+  - [ ] Notify IR Lead via designated channel (Slack/Phone).  
+  - [ ] Record start time and initial indicator details.  
+
+---
+
+## Phishing – Phase: Identification  
+
+**Decision‑Tree (simplified)**  
+
+- Alert received →  
+  - **If** email header shows SPF/DKIM failure **or** URL matches known malicious IOC → **Then** mark as *Confirmed Phish*.  
+  - **Else** → Sandbox URL/attachment, query VirusTotal, check user report.  
+    - **If** sandbox result is malicious **or** VT score > 7 → *Confirmed Phish*.  
+    - **Else** → *False Positive* → close ticket.  
+
+- **Evidence Collection Checklist**  
+  - [ ] Capture full email header (RAW).  
+  - [ ] Save original message body and attachments.  
+  - [ ] Export user’s mailbox copy (PST/EML).  
+  - [ ] Gather endpoint logs (process creation, network connections).  
+  - [ ] Record user report details (time, description).  
+
+- **Escalation Criteria**  
+  - [ ] ≥ 5 users report same campaign.  
+  - [ ] High‑severity IOC (e.g., credential‑stealing domain).  
+  - [ ] Evidence of credential compromise.  
+
+---
+
+## Phishing – Phase: Containment  
+
+- **Short‑Term Actions**  
+  - [ ] Isolate affected endpoint(s) (network quarantine).  
+  - [ ] Block malicious URL/domain on web proxy and DNS.  
+  - [ ] Disable compromised user account; enforce MFA reset.  
+  - [ ] Remove email from all mailboxes (search‑and‑destroy).  
+
+- **Long‑Term Actions**  
+  - [ ] Update firewall/proxy block lists with IOC.  
+  - [ ] Adjust email filtering rules (add sender/domain to block list).  
+  - [ ] Create containment ticket linked to incident.  
+
+- **Decision Point**  
+  - **If** containment actions not completed within 30 min → **Then** elevate to IR Lead for additional resources.  
+
+---
+
+## Phishing – Phase: Eradication  
+
+- **Artifact Removal Checklist**  
+  - [ ] Run full anti‑malware scan on isolated endpoint(s).  
+  - [ ] Delete phishing email from all user mailboxes and server archives.  
+  - [ ] Remove any malicious scripts/macros from user devices.  
+  - [ ] Reset compromised credentials; enforce password change.  
+
+- **Verification**  
+  - [ ] Confirm no residual IOC hashes remain in EDR/AV signatures.  
+  - [ ] Tier‑2 analyst signs off “Eradication Completed”.  
+
+---
+
+## Phishing – Phase: Recovery  
+
+- **Service Restoration Checklist**  
+  - [ ] Re‑image or clean endpoint; reconnect to network.  
+  - [ ] Re‑enable user account after MFA reset.  
+  - [ ] Monitor endpoint and mail flow for 72 h for re‑infection.  
+  - [ ] Obtain user confirmation that email functions normally.  
+
+- **Ticket Closure**  
+  - [ ] Update ticket status to **Recovered**.  
+  - [ ] Notify stakeholders (IT Owner, Communications Lead).  
+
+---
+
+## Phishing – Phase: Lessons Learned  
+
+- **Post‑Incident Review** (within 5 business days)  
+  - [ ] Conduct debrief meeting with SOC, IR Lead, IT Owner.  
+  - [ ] Complete “Incident Review Form” capturing:  
+    - Root cause & attack vector.  
+    - Detection gaps (e.g., missed SPF failure).  
+    - Containment effectiveness & timing.  
+    - Timeline of actions.  
+    - Improvement actions & owners.  
+
+- **Remediation & Knowledge Update**  
+  - [ ] Assign remediation tasks with due dates.  
+  - [ ] Update email filtering policies and EDR signatures.  
+  - [ ] Archive all evidence (headers, logs, sandbox reports).  
+  - [ ] Publish new IOCs to threat intel platform / knowledge base.  
+
+---
+
+### Phishing – Role Responsibilities Summary  
+
+| Phase          | Tier‑1 Analyst | Tier‑2 Analyst | IR Lead | IT Owner | Communications Lead |
+|----------------|----------------|----------------|--------|----------|----------------------|
+| Preparation    | Run‑book activation, verify tool config | Validate controls, update checklists | Approve readiness | Ensure asset inventory | Draft communication templates |
+| Identification | Initial triage, collect evidence | IOC validation, escalation decision | Authorize escalation | — | — |
+| Containment    | Execute short‑term isolation steps | Apply long‑term blocks, monitor | Escalate if >30 min | Disable accounts, reset MFA | Notify affected users |
+| Eradication    | Run scans, delete email | Verify complete IOC removal, sign‑off | — | Reset passwords | — |
+| Recovery       | Re‑enable endpoint, monitor | Confirm clean state | Approve ticket closure | Restore services | Send recovery notice |
+| Lessons Learned| Provide notes, evidence | Lead review form completion | Facilitate post‑mortem | Implement remediation | Prepare external statements |
+
+---
+
+# Enterprise Malware Infection – Phase: Preparation  
+
+- **Prerequisite Controls**  
+  - Network segmentation, application whitelisting, EDR with behavioral detection.  
+  - Central logging (Syslog, Windows Event Forwarding) to SIEM.  
+  - Up‑to‑date software patch management.  
+
+- **Detection Tool Checklist**  
+  - [ ] SIEM alerts for:  
+    - Process creation of known malicious hash.  
+    - Lateral movement indicators (SMB, RDP spikes).  
+    - Unusual outbound traffic (C2).  
+  - [ ] EDR policies for “malicious executable”, “script injection”, “credential dumping”.  
+  - [ ] Threat intel feed for malware families.  
+
+- **Roles & Responsibilities** – same as Phishing (see table).  
+
+- **Run‑book Activation Checklist**  
+  - [ ] Verify alert source (EDR, SIEM, AV).  
+  - [ ] Create incident ticket; assign Tier‑1.  
+  - [ ] Notify IR Lead.  
+  - [ ] Log start time and affected asset IDs.  
+
+---
+
+## Enterprise Malware – Phase: Identification  
+
+**Decision‑Tree**  
+
+- Alert received →  
+  - **If** hash matches known malware IOC → *Confirmed Malware*.  
+  - **Else** → Perform sandbox analysis of executable, check process tree.  
+    - **If** sandbox shows malicious behavior **or** C2 communication detected → *Confirmed Malware*.  
+    - **Else** → *Suspicious* → continue monitoring.  
+
+- **Evidence Collection Checklist**  
+  - [ ] Capture process hash, command line, parent‑child relationship.  
+  - [ ] Export EDR telemetry (timeline, network connections).  
+  - [ ] Collect memory dump (if feasible).  
+  - [ ] Gather system logs (Windows Event, Sysmon).  
+  - [ ] Record user activity at time of detection.  
+
+- **Escalation Criteria**  
+  - [ ] Malware classified as “High” severity (ransomware, credential stealer).  
+  - [ ] Affected > 3 critical systems.  
+  - [ ] Evidence of lateral movement.  
+
+---
+
+## Enterprise Malware – Phase: Containment  
+
+- **Short‑Term Actions**  
+  - [ ] Isolate infected endpoint (disable network port, VLAN quarantine).  
+  - [ ] Block C2 IPs/domains at firewall/proxy.  
+  - [ ] Stop malicious processes via EDR kill‑command.  
+  - [ ] Disable compromised service accounts.  
+
+- **Long‑Term Actions**  
+  - [ ] Deploy updated AV/EDR signatures across fleet.  
+  - [ ] Harden firewall rules (restrict SMB/RDP where not needed).  
+  - [ ] Create containment ticket, link to incident.  
+
+- **Decision Point**  
+  - **If** isolation fails or malware persists after 30 min → **Then** elevate to IR Lead for full network segment shutdown.  
+
+---
+
+## Enterprise Malware – Phase: Eradication  
+
+- **Artifact Removal Checklist**  
+  - [ ] Run full system scan with updated definitions.  
+  - [ ] Remove malicious binaries and scheduled tasks.  
+  - [ ] Delete persistence mechanisms (registry run keys, services).  
+  - [ ] Reset credentials for impacted accounts.  
+
+- **Verification**  
+  - [ ] Confirm no residual processes or scheduled tasks.  
+  - [ ] Tier‑2 analyst signs off “Eradication Completed”.  
+
+---
+
+## Enterprise Malware – Phase: Recovery  
+
+- **Restoration Checklist**  
+  - [ ] Re‑image system from known‑good baseline or apply clean OS image.  
+  - [ ] Restore data from backup after verifying cleanliness.  
+  - [ ] Re‑enable network connectivity; monitor for 72 h.  
+  - [ ] Obtain user/owner confirmation of system functionality.  
+
+- **Ticket Closure**  
+  - [ ] Update status to **Recovered**.  
+  - [ ] Notify IT Owner and Communications Lead.  
+
+---
+
+## Enterprise Malware – Phase: Lessons Learned  
+
+- **Post‑Incident Review** (within 5 business days)  
+  - [ ] Conduct debrief with SOC, IR Lead, IT Owner, Patch Management.  
+  - [ ] Fill “Incident Review Form” – include:  
+    - Malware family, infection vector, root cause.  
+    - Detection gaps (e.g., missing behavioral rule).  
+    - Containment timeline & effectiveness.  
+    - Recommended control improvements.  
+
+- **Remediation & Knowledge Update**  
+  - [ ] Assign tasks (patch missing vulnerabilities, update application whitelist).  
+  - [ ] Publish new IOCs and detection rules to SIEM/EDR.  
+  - [ ] Archive forensic artifacts securely.  
+  - [ ] Update knowledge base with lessons and updated playbook steps.  
+
+---
+
+### Enterprise Malware – Role Responsibilities Summary  
+
+| Phase          | Tier‑1 Analyst | Tier‑2 Analyst | IR Lead | IT Owner | Communications Lead |
+|----------------|----------------|----------------|--------|----------|----------------------|
+| Preparation    | Activate run‑book, verify alerts | Validate controls, update signatures | Approve readiness | Ensure patch baseline | Draft alerts |
+| Identification | Initial triage, collect telemetry | Deep analysis, sandbox, IOC validation | Authorize escalation | — | — |
+| Containment    | Execute endpoint isolation | Apply network blocks, kill processes | Escalate if >30 min | Disable accounts, service changes | Notify affected users |
+| Eradication    | Run scans, remove files | Verify persistence removal, sign‑off | — | Reset passwords, re‑image | — |
+| Recovery       | Re‑connect endpoint, monitor | Confirm clean state | Approve ticket closure | Restore from backup | Send recovery notice |
+| Lessons Learned| Provide evidence, notes | Lead review form completion | Facilitate post‑mortem | Implement remediation | Prepare communications |
+
+---
+
+## Review Checklist  
+
+- [ ] All six NIST phases present and ordered correctly.  
+- [ ] Each phase contains at least three concrete, verifiable actions.  
+- [ ] Decision‑tree logic is unambiguous and uses “If/Then” statements.  
+- [ ] Role definitions are explicit and mapped to actions.  
+- [ ] Playbook conforms to NIST SP 800‑61 terminology.  
+- [ ] Formatting follows the specified markdown structure.  
