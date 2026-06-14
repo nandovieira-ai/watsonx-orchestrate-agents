@@ -1,0 +1,27 @@
+Timestamp: 2024-01-15 14:30:00
+Source IP: 101.123.171.5
+Destination IP: 186.20.20.27
+Protocol: TCP
+Port: 21
+Description: Outbound connection from compromised system. Unusual high traffic to known malicious IP. Timestamp: 2024-01-15 14:31:10
+Source IP: 101.123.171.8
+Destination IP: 176.30.30.27
+Protocol: UDP
+Port: 5000
+Description: Suspicious outbound traffic detected. Unusual activity to known malicious IP.
+...
+Timestamp: 2024-01-15 15:45:22
+Source IP: 101.123.171.15
+Destination IP: 186.20.20.27
+Protocol: TCP
+Port: 8080
+Description: Abnormal traffic pattern detected from compromised system. Connection to known malicious IP. .
+.
+.
+.
+Timestamp: 2024-01-15 23:10:15
+Source IP: 101.123.171.4
+Destination IP: 176.30.30.27
+Protocol: TCP
+Port: 21
+Description: Outbound connection from compromised system. Unusual high traffic to known malicious IP.
